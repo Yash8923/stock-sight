@@ -1,0 +1,56 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock History</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    
+
+
+{% block content %}
+    <h2>Stock History & Prediction for {{ stock_data.0.stock_symbol }}</h2>
+
+    
+
+    <!-- Chart Container -->
+    <div class="chart-container">
+        <canvas id="priceChart"></canvas>
+    </div>
+
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var ctx = document.getElementById("priceChart").getContext("2d");
+
+            // ✅ Destroy previous chart instance if exists
+            if (window.stockChartInstance) {
+                window.stockChartInstance.destroy();
+            }
+
+            window.stockChartInstance = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: [{% for stock in stock_data %} "{{ stock.date }}", {% endfor %}],
+                    datasets: [{
+                        label: "Stock Prices",
+                        data: [{% for stock in stock_data %} {{ stock.close_price }}, {% endfor %}],
+                        borderColor: "blue",
+                        backgroundColor: "rgba(0, 0, 255, 0.1)",
+                        fill: true
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        });
+    </script>
+    
+
+{% endblock %}
+</body>
+</html>

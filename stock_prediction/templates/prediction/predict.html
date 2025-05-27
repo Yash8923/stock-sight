@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="predict-wrapper my-5 text-center">
+    <h2 class="mb-4">Stock Prediction</h2>
+
+    <!-- 🔍 Form -->
+    <form method="POST" class="mt-4">
+        {% csrf_token %}
+        <div class="d-flex justify-content-center flex-wrap gap-2">
+            <!-- Input Field -->
+            <input type="text"
+                   name="stock_symbol"
+                   class="form-control form-control-lg"
+                   placeholder="e.g., INFY.BSE"
+                   value="{{ stock_symbol }}"
+                   style="max-width: 300px; min-width: 220px;"
+                   required>
+    
+            <!-- Dropdown -->
+            <select name="date_range"
+                    class="form-select form-select-lg"
+                    style="max-width: 200px; min-width: 160px;">
+                <option value="30d" {% if selected_range == "30d" %}selected{% endif %}>Last 30 Days</option>
+                <option value="60d" {% if selected_range == "60d" %}selected{% endif %}>Last 60 Days</option>
+                <option value="6mo" {% if selected_range == "6mo" %}selected{% endif %}>Last 6 Months</option>
+                <option value="1y" {% if selected_range == "1y" %}selected{% endif %}>Last 1 Year</option>
+                <option value="2y" {% if selected_range == "2y" %}selected{% endif %}>Last 2 Years</option>
+                <option value="3y" {% if selected_range == "3y" %}selected{% endif %}>Last 3 Years</option>
+                <option value="5y" {% if selected_range == "5y" %}selected{% endif %}>Last 5 Years</option>
+                <option value="7y" {% if selected_range == "7y" %}selected{% endif %}>Last 7 Years</option>
+            </select>
+    
+            <!-- Button -->
+            <button type="submit"
+                    class="btn btn-primary btn-lg"
+                    style="min-width: 120px;">
+                Predict
+            </button>
+        </div>
+    </form>
+    
+    
+    <!-- 📢 Prediction Result -->
+    {% if prediction %}
+    <div class="alert alert-info mt-4 w-75 mx-auto">
+        {{ prediction }}<br>
+        <strong>{{ confidence }}</strong>
+    </div>
+    {% endif %}
+
+    <!-- 📉 No data warning -->
+    {% if stock_symbol and not stock_data %}
+    <div class="alert alert-warning text-center w-75 mx-auto mt-3">
+        No stock data available for <strong>{{ stock_symbol }}</strong>.
+    </div>
+    {% endif %}
+
+    <!-- 📁 View History -->
+    {% if stock_symbol and stock_data.dates %}
+    <a href="{% url 'stock_history' stock_symbol=stock_symbol %}" class="btn btn-outline-secondary mt-3">
+        View Full Stock History & Chart
+    </a>
+    {% endif %}
+</div>
+
+<!-- 📈 Chart -->
+{% if stock_data.dates %}
+<div class="chart-wrapper my-5">
+    <canvas id="stockChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById("stockChart").getContext("2d");
+
+        if (window.stockChartInstance) {
+            window.stockChartInstance.destroy();
+        }
+
+        window.stockChartInstance = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: {{ stock_data.dates|safe }},
+                datasets: [{
+                    label: "Stock Prices ({{ selected_range }})",
+                    data: {{ stock_data.prices|safe }},
+                    borderColor: "rgba(0, 123, 255, 1)",
+                    backgroundColor: "rgba(0, 123, 255, 0.1)",
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true },
+                },
+                scales: {
+                    x: {
+                        ticks: { autoSkip: true, maxTicksLimit: 10 }
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endif %}
+{% endblock %}

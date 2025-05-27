@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About - Stock Sight</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="{% static 'css/about.css' %}" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-primary" href="{% url 'home' %}"><img src="{% static 'images/stock_sight_logo.jpg' %}" width="36" height="36" alt="Logo" style="object-fit: contain;">  Stock Sight</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+        {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'predict' %}">Predict</a></li>
+        {% endif %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+        {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link text-danger" href="{% url 'logout' %}">Logout</a></li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Signup</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="text-center py-5 bg-light border-bottom">
+  <div class="container">
+    <h1 class="display-5 fw-bold text-dark">StockSight: See Tomorrow’s Markets Today</h1>
+    <p class="lead text-muted mt-3">An algorithmic trading platform to build, test, and deploy strategies using stock predictions.</p>
+    <a href="{% url 'home' %}" class="btn btn-primary btn-lg mt-3 px-4">Get Started</a>
+  </div>
+</section>
+
+<!-- About Sections -->
+<section class="container py-5">
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="bg-white shadow-sm p-4 rounded-3 h-100">
+        <h4 class="text-primary mb-3">What is Stock Sight?</h4>
+        <p>Stock Sight is your trusted companion for navigating the world of stocks. Whether you are a beginner or expert, our tools use ML to forecast stock trends using historical patterns and live data.</p>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="bg-white shadow-sm p-4 rounded-3 h-100">
+        <h4 class="text-primary mb-3">Our Vision</h4>
+        <p>We envision democratized access to stock prediction, helping both novice and pro investors make confident, data-backed decisions with ease and transparency in a dynamic market environment.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mt-4">
+    <div class="col-md-6">
+      <div class="bg-white shadow-sm p-4 rounded-3 h-100">
+        <h4 class="text-primary mb-3">Why Stock Sight?</h4>
+        <ul class="list-unstyled">
+          <li>✅ Advanced AI Models for market prediction</li>
+          <li>✅ Real-Time & Clean Data</li>
+          <li>✅ User-Friendly Dashboard</li>
+          <li>✅ Informed Investing, not speculation</li>
+          <li>✅ High security & data encryption</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="bg-white shadow-sm p-4 rounded-3 h-100">
+        <h4 class="text-primary mb-3">How It Works</h4>
+        <p>We analyze:</p>
+        <ul class="list-unstyled">
+          <li>📊 Historical stock data & patterns</li>
+          <li>📈 Real-time stock signals</li>
+          <li>📰 Financial news & sentiment</li>
+          <li>📉 Technical & fundamental indicators</li>
+        </ul>
+        <p>All to give you accurate, actionable investment predictions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-white text-center py-3 border-top mt-5">
+  <p class="mb-0 text-muted">&copy; 2025 <strong>Stock Sight</strong>. All rights reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+{% comment %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Page</title>
+    <link rel="stylesheet" href="{% static 'css/about.css' %}">
+</head>
+<body>
+    <!-- Navbar -->
+    <section class="about-header py-5 mt-5 text-center bg-white">
+        <div class="container">
+            <h1 class="display-5 fw-bold">StockSight: See Tomorrow’s Markets Today</h1>
+        </div>
+        <div class="right">
+                <a href="{% url 'home' %}">Home</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'predict' %}">Predict</a>
+                {% endif %}
+                <a href="{% url 'contact' %}">Contact</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}">Login</a>
+                    <a href="{% url 'signup' %}">Signup</a>
+                {% endif %}
+        </div>
+    </section>
+
+    
+    </section>
+    
+    <section class="about-intro bg-light text-center py-5">
+        <div class="container">
+            <h2 class="text-primary">An algorithmic trading platform that allows users to build, test, and deploy trading strategies, often based on stock predictions.</h2>
+            <p class="lead">Stay informed with live market data and instant notifications.</p>
+            <a href="{% url 'home' %}" class="btn btn-primary btn-lg mt-3">Get Started</a>
+        </div>
+    </section>
+    
+    <section class="container py-5">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="p-4 bg-white rounded shadow-sm h-100">
+                    <h3 class="text-primary mb-3">What is Stock Sight?</h3>
+                    <p>Welcome to Stock Sight, your trusted companion in navigating the world of stock markets and making informed investment decisions. Our mission is to empower investors—whether you're a seasoned trader or just starting your investment journey—with cutting-edge tools and insights to predict market trends and enhance portfolio performance. Stock Sight is an advanced stock prediction application that uses data-driven algorithms, machine learning models, and historical data analysis to provide accurate and timely stock market predictions. We combine technology with deep market understanding to offer insights that help you make better investment choices and stay ahead of the market.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-4 bg-white rounded shadow-sm h-100">
+                    <h3 class="text-primary mb-3">Our Vision</h3>
+                    <p>In today’s fast-paced financial world, making informed investment decisions is more crucial than ever. At StockSight, we believe that everyone deserves access to accurate stock market insights—not just professional traders or financial analysts. We envision a world where all investors, big or small, have access to tools that demystify the stock market. We strive to make stock prediction more accessible, transparent, and effective, giving users the confidence to make decisions with clarity and precision. Whether you’re trading stocks daily or building a long-term portfolio, our platform helps you stay ahead in the dynamic world of finance. Our platform provides data-backed insights to optimize your trading strategy.</p>
+                </div>
+            </div>
+        </div>
+    
+        <div class="row g-4 mt-4">
+            <div class="col-md-6">
+                <div class="p-4 bg-white rounded shadow-sm h-100">
+                    <h3 class="text-primary mb-3">Why Stock Sight?</h3>
+                    <ul class="list-unstyled">
+                        <li>✅ Advanced AI Technology – Our deep learning models continuously evolve to improve prediction accuracy.</li>
+                        <li>✅ Real-Time & Reliable Data – Unlike traditional analysis tools, we provide instant market insights.</li>
+                        <li>✅ Easy-to-Use Platform – Whether you’re a beginner or an expert, our intuitive interface makes investing easier.</li>
+                        <li>✅ Data-Driven Decision Making – Move beyond speculation and make informed choices based on real analytics.</li>
+                        <li>✅ Security & Privacy – Your financial data is encrypted and protected with the highest security standards.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-4 bg-white rounded shadow-sm h-100">
+                    <h3 class="text-primary mb-3">How Stock Sight Works?</h3>
+                    <p>StockSight leverages cutting-edge AI algorithms and financial models to generate stock predictions with a high degree of accuracy. Our technology analyzes millions of data points, including:</p>
+                    <ul class="list-unstyled">
+                        <li>📊 Historical Market Data – Identifying past trends and patterns to predict future movements.</li>
+                        <li>📈 Live Stock Market Signals – Processing real-time price fluctuations and volume shifts.</li>
+                        <li>📰 News & Sentiment Analysis – Evaluating news headlines, financial reports, and social media trends.</li>
+                        <li>📉 Technical & Fundamental Indicators – Integrating metrics like moving averages, RSI, MACD, earnings reports, and balance sheets.</li>
+                    </ul>
+                    <p>With this multi-faceted approach, StockSight delivers actionable insights that empower traders to make confident investment decisions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="bg-light text-center py-3 mt-5">
+        <p class="mb-0">&copy; 2025 <strong>Stock Sight</strong>. All rights reserved.</p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        
+</body>
+</html> {% endcomment %}

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-3">Welcome, <strong>{{ user.username }}</strong>!</h2>
+    <p class="text-center text-muted">Email: {{ user.email }}</p>
+
+    {% if is_admin %}
+        <h4 class="mt-5">Admin Panel</h4>
+        <div class="card shadow-sm my-4">
+            <div class="card-body">
+                <h5 class="mb-3">User Feedback Messages</h5>
+                {% if contact_messages %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Message</th>
+                                    <th>Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for msg in contact_messages %}
+                                <tr>
+                                    <td>{{ msg.name }}</td>
+                                    <td>{{ msg.email }}</td>
+                                    <td>{{ msg.message }}</td>
+                                    <td>{{ msg.timestamp|date:"d M Y, H:i" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No feedback messages found.</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+    <h4 class="mt-5">Your Stock Predictions</h4>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            {% if user_stocks %}
+                <p><strong>Total Predictions:</strong> {{ total_predictions }}</p>
+                <p><strong>Last Stock:</strong> {{ last_stock }}</p>
+                <p><strong>Last Confidence:</strong> {{ last_confidence }}</p>
+
+                <div class="table-responsive mt-4">
+                    <table class="table table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Stock Symbol</th>
+                                <th>Prediction Date</th>
+                                <th>Predicted Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stock in user_stocks %}
+                            <tr>
+                                <td><span class="badge bg-secondary">{{ stock.stock_symbol }}</span></td>
+                                <td>{{ stock.prediction_date|date:"d M Y, H:i" }}</td>
+                                <td><strong>{{ stock.predicted_price|floatformat:2 }} INR</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted">No predictions available yet.</p>
+            {% endif %}
+
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{% url 'predict' %}" class="btn btn-outline-primary">← Back to Predict</a>
+                <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

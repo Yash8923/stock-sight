@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: stock-sight
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn stock_prediction.wsgi:application"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: stock_prediction.settings
+      - key: PYTHON_VERSION
+        value: 3.10
+      - key: SECRET_KEY
+        value: mjz6ywhtd@g^+n=_n4ld5p5a$n%-=s_rru_m%dko#=z6q!06ei
+      - key: DEBUG
+        value: "False"

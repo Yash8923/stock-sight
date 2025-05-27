@@ -1,0 +1,121 @@
+html, body {
+    height: 100%;
+}
+body {
+    display: flex;
+    flex-direction: column;
+}
+.container {
+    flex: 1;
+}
+
+form {
+    width: 300px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+}
+
+.card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    margin-top: 15px;
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+.chart-container {
+    width: 80%;  /* ✅ Limit width */
+    max-width: 800px;  /* ✅ Prevent excessive width */
+    height: 400px;  /* ✅ Set a good height */
+    margin: auto;  /* ✅ Center the chart */
+}
+
+input.form-control {
+    width: 250px;
+    min-width: 200px;
+    border-radius: 8px;
+}
+
+body {
+    background-color: #f8f9fa;
+}
+
+/* Predict page */
+.predict-wrapper {
+    max-width: 720px;
+    margin: auto;
+    padding: 40px 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Stylish input and button */
+.predict-form .input-group {
+    max-width: 500px;
+    margin: auto;
+}
+
+.custom-input {
+    min-width: 250px;
+    border-radius: 8px 0 0 8px !important;
+    border-right: none !important;
+}
+
+.predict-form .btn-primary {
+    border-radius: 0 8px 8px 0 !important;
+    font-weight: 500;
+}
+
+/* Chart container */
+.chart-wrapper {
+    max-width: 900px;
+    margin: 0 auto 60px auto;
+    height: 400px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+
+.predict-form input,
+.predict-form select,
+.predict-form .btn {
+    height: 48px;
+    font-size: 16px;
+}
+
