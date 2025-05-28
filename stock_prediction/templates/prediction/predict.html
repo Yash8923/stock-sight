@@ -22,7 +22,7 @@
             <select name="date_range"
                     class="form-select form-select-lg"
                     style="max-width: 200px; min-width: 160px;">
-                <option value="30d" {% if selected_range == "30d" %}selected{% endif %}>Last 30 Days</option>
+               <!-- <option value="30d" {% if selected_range == "30d" %}selected{% endif %}>Last 30 Days</option>-->
                 <option value="60d" {% if selected_range == "60d" %}selected{% endif %}>Last 60 Days</option>
                 <option value="6mo" {% if selected_range == "6mo" %}selected{% endif %}>Last 6 Months</option>
                 <option value="1y" {% if selected_range == "1y" %}selected{% endif %}>Last 1 Year</option>
@@ -45,8 +45,12 @@
     <!-- 📢 Prediction Result -->
     {% if prediction %}
     <div class="alert alert-info mt-4 w-75 mx-auto">
-        {{ prediction }}<br>
-        <strong>{{ confidence }}</strong>
+       <p> {{ prediction }}</p>
+        {% if confidence %}
+            <strong>{{ confidence }}</strong>
+        {% else %}
+            <strong style='color:grey;'> Confidence not available</strong>
+        {% endif %}
     </div>
     {% endif %}
 

@@ -17,7 +17,13 @@ def fetch_stock_data_for_symbol(symbol):
         if "Time Series (Daily)" in data:
             daily_data = data["Time Series (Daily)"]
             df = pd.DataFrame.from_dict(daily_data, orient="index", dtype=float)
-            df.columns = ["Open", "High", "Low", "Close", "Volume"]
+            df.rename(columns={
+                "1. open": "Open",
+                "2. high": "High",
+                "3. low": "Low",
+                "4. close": "Close",
+                "5. volume": "Volume"
+            }, inplace=True)
             df["Volume"] = df["Volume"].astype(int)
             df.index = pd.to_datetime(df.index)
             return df.sort_index()
@@ -26,7 +32,8 @@ def fetch_stock_data_for_symbol(symbol):
 
     # 2️⃣ Try Yahoo Finance (as fallback)
     try:
-        df = yf.download(symbol, period="60d", interval="1d")
+        fallback_symbol = symbol.replace(".NS","").replace(".BSE","")
+        df = yf.download(fallback_symbol, period="60d", interval="1d")
         if not df.empty:
             return df
     except Exception as e:

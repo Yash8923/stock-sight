@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from datetime import datetime, timedelta
-import requests
+from .utils import fetch_stock_data_for_symbol
+import requests,joblib
 from django.contrib.auth import authenticate, login as auth_login,logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -28,9 +29,11 @@ model = load_model(MODEL_PATH)'''
 
 # Construct model path dynamically
 MODEL_PATH = os.path.join(settings.BASE_DIR, "prediction", "models", "stock_prediction_model.h5")
+SCALER_PATH = os.path.join(settings.BASE_DIR, "prediction", "models", "scaler.pkl")
 
 # Load the model once at startup
 model = load_model(MODEL_PATH, compile=False)
+scaler = joblib.load(SCALER_PATH)
 
 
 # Create your views here.
@@ -173,41 +176,33 @@ def predict_view(request):
         stock_symbol = request.POST.get("stock_symbol", "").upper().strip()
         selected_range = request.POST.get("date_range", "60d")
 
-        # Determine date range
         end_date = datetime.today()
         days = range_mapping.get(selected_range, 60)
         start_date = end_date - timedelta(days=days)
 
-        # Try fetching from DB within range
         queryset = StockHistory.objects.filter(
             stock_symbol=stock_symbol,
             date__range=(start_date, end_date)
         ).order_by("date")
 
-        # If not in DB, fetch online
         if not queryset.exists():
             df = fetch_stock_data_for_symbol(stock_symbol)
             if df is not None:
                 df = df.sort_index()
                 df.reset_index(inplace=True)
                 df.rename(columns={"index": "date"}, inplace=True)
-
                 for _, row in df.iterrows():
-                    obj_exists = StockHistory.objects.filter(
+                    StockHistory.objects.get_or_create(
                         stock_symbol=stock_symbol,
                         date=row["date"].date(),
-                    ).exists()
-                    if not obj_exists:
-                        StockHistory.objects.create(
-                            stock_symbol=stock_symbol,
-                            date=row["date"].date(),
-                            open_price = row["Open"],
-                            high_price = row["High"],
-                            low_price = row["Low"],
-                            close_price = row["Close"],
-                            volume = int(row["Volume"]),
+                        defaults={
+                            "open_price": row["Open"],
+                            "high_price": row["High"],
+                            "low_price": row["Low"],
+                            "close_price": row["Close"],
+                            "volume": int(row["Volume"]),
+                        }
                     )
-                # Refetch after insertion
                 queryset = StockHistory.objects.filter(
                     stock_symbol=stock_symbol,
                     date__range=(start_date, end_date)
@@ -218,22 +213,25 @@ def predict_view(request):
             df["date"] = pd.to_datetime(df["date"])
             df.set_index("date", inplace=True)
 
-            # Get prices
             prices = df["close_price"].values
 
-            if len(prices) >= 30:
-                # Scale, predict, and reverse scale
+            if len(prices) < 50:
+                prediction = (
+                    f"Only {len(prices)} trading days of data available in the selected range "
+                    f"('{selected_range}'). At least 50 days are required to make a prediction."
+                )
+                confidence_score = None
+            else:
                 scaler = MinMaxScaler()
                 scaled_prices = scaler.fit_transform(prices.reshape(-1, 1))
-                input_data = scaled_prices[-30:].reshape(1, 30, 1)
+                input_data = scaled_prices[-50:].reshape(1, 50, 1)
 
                 predicted_array = model.predict(input_data)
                 predicted_price = scaler.inverse_transform(predicted_array)[0][0]
 
-                std_dev = np.std(prices[-30:])
+                std_dev = np.std(prices[-50:])
                 confidence = max(0, min(100, 100 - (std_dev / predicted_price * 100))) if predicted_price > 0 else 0
                 confidence_score = f"Confidence Score: {confidence:.2f}%"
-
                 prediction = f"Predicted Price for {stock_symbol}: {predicted_price:.2f} INR"
 
                 StockPrediction.objects.create(
@@ -242,10 +240,7 @@ def predict_view(request):
                     predicted_price=predicted_price,
                     confidence_score=confidence,
                 )
-            else:
-                prediction = "Not enough data to predict."
 
-            # Prepare chart data
             stock_data = {
                 "dates": df.index.strftime("%Y-%m-%d").tolist(),
                 "prices": prices.tolist(),
