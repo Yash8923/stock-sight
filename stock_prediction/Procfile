@@ -1,2 +1,1 @@
-web: gunicorn
-stock_prediction.wsgi
+web: gunicorn stock_prediction.wsgi:application --timeout 120

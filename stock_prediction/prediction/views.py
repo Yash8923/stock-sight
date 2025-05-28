@@ -22,6 +22,16 @@ from prediction.utils import fetch_stock_data_for_symbol
 from sklearn.preprocessing import MinMaxScaler 
 from .forms import ContactForm
 from prediction.models import ContactMessage
+from django.conf import settings 
+
+model = None
+
+def load_prediction_model():
+    global model
+    if model is None:
+        model = load_model(os.path.join(settings.BASE_DIR,'prediction/models/stock_prediction_model.h5'),compile=False)
+        return model
+    
 
 '''# Model ko load karne ke liye
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "stock_model.h5")
@@ -32,7 +42,7 @@ MODEL_PATH = os.path.join(settings.BASE_DIR, "prediction", "models", "stock_pred
 SCALER_PATH = os.path.join(settings.BASE_DIR, "prediction", "models", "scaler.pkl")
 
 # Load the model once at startup
-model = load_model(MODEL_PATH, compile=False)
+# model = load_model(MODEL_PATH, compile=False)
 scaler = joblib.load(SCALER_PATH)
 
 
@@ -222,10 +232,12 @@ def predict_view(request):
                 )
                 confidence_score = None
             else:
+                load_prediction_model()
+                
                 scaler = MinMaxScaler()
                 scaled_prices = scaler.fit_transform(prices.reshape(-1, 1))
                 input_data = scaled_prices[-50:].reshape(1, 50, 1)
-
+                
                 predicted_array = model.predict(input_data)
                 predicted_price = scaler.inverse_transform(predicted_array)[0][0]
 
