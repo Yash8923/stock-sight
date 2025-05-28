@@ -26,7 +26,9 @@ LOGIN_URL = '/prediction/login/'
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#tgl3dx*jf8v*-dme@qu_kff6g7evpunhsuf$5bux#ja#rrcaw'
+# SECRET_KEY = 'django-insecure-#tgl3dx*jf8v*-dme@qu_kff6g7evpunhsuf$5bux#ja#rrcaw'
+
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'unsafe-dev-key')
 
 ALPHA_VANTAGE_API_KEY = "IMX52D8BMBPYMHJP"
 
@@ -142,7 +144,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
 STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 if not DEBUG:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedMainfestStaticFilesStorage'
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
